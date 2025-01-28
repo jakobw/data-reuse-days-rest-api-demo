@@ -1,0 +1,11 @@
+<html>
+<body>
+<div style="text-align: right">
+    <% if (user) { %>
+        Hello, <%= user.displayName %>
+    <% } else { %>
+        <a href="/login/mediawiki">login</a>
+    <% } %>
+</div>
+</body>
+</html>
