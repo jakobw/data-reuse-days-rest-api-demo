@@ -1,11 +1,9 @@
-<html>
-<body>
-<div style="text-align: right">
-    <% if (user) { %>
-        Hello, <%= user.displayName %>
-    <% } else { %>
-        <a href="/login/mediawiki">login</a>
-    <% } %>
+<%- include( 'header' ); -%>
+
+<div class="section">
+    <div class="container">
+        Hello World!
+    </div>
 </div>
-</body>
-</html>
+
+<%- include( 'footer' ); -%>
