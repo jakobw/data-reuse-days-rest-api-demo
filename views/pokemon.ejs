@@ -4,36 +4,46 @@
     <div class="container">
         <h1 class="title"><%= label %> (<%= id %>)</h1>
 
-        <div class="field">
-            <label for="primaryType" class="label">
-                Primary type
-            </label>
-            <div class="select">
-                <select name="primaryType">
-                    <option value="none">none</option>
-                    <% Object.keys( allTypes ).forEach( ( id ) => { %>
-                        <option value="<%= id %>" <%= primaryTypeStatement && primaryTypeStatement.value.content === id ? 'selected' : '' %>>
-                            <%= allTypes[id] %>
-                        </option>
-                    <% } ) %>
-                </select>
+        <form action="/update-types" method="post">
+            <div class="field">
+                <label for="primaryType" class="label">
+                    Primary type
+                </label>
+                <div class="select">
+                    <select name="primaryType">
+                        <option value="none">none</option>
+                        <% Object.keys( allTypes ).forEach( ( id ) => { %>
+                            <option value="<%= id %>" <%= primaryTypeStatement && primaryTypeStatement.value.content === id ? 'selected' : '' %>>
+                                <%= allTypes[id] %>
+                            </option>
+                        <% } ) %>
+                    </select>
+                </div>
             </div>
-        </div>
 
 
-        <div class="field">
-            <label for="secondaryType" class="label">Secondary type</label>
-            <div class="select">
-                <select name="secondaryType">
-                    <option value="none">none</option>
-                    <% Object.keys( allTypes ).forEach( ( id ) => { %>
-                        <option value="<%= id %>" <%= secondaryTypeStatement && secondaryTypeStatement.value.content === id ? 'selected' : '' %>>
-                            <%= allTypes[id] %>
-                        </option>
-                    <% } ) %>
-                </select>
+            <div class="field">
+                <label for="secondaryType" class="label">Secondary type</label>
+                <div class="select">
+                    <select name="secondaryType">
+                        <option value="none">none</option>
+                        <% Object.keys( allTypes ).forEach( ( id ) => { %>
+                            <option value="<%= id %>" <%= secondaryTypeStatement && secondaryTypeStatement.value.content === id ? 'selected' : '' %>>
+                                <%= allTypes[id] %>
+                            </option>
+                        <% } ) %>
+                    </select>
+                </div>
             </div>
-        </div>
+
+            <input type="hidden" name="id" value="<%= id %>">
+            <input type="hidden" name="primaryStatementId" value="<%= primaryTypeStatement && primaryTypeStatement.id %>">
+            <input type="hidden" name="originalPrimaryType" value="<%= primaryTypeStatement && primaryTypeStatement.value.content %>">
+            <input type="hidden" name="secondaryStatementId" value="<%= secondaryTypeStatement && secondaryTypeStatement.id %>">
+            <input type="hidden" name="originalSecondaryType" value="<%= secondaryTypeStatement && secondaryTypeStatement.value.content %>">
+
+            <input class="button is-primary is-light" type="submit" value="Update types!">
+        </form>
     </div>
 </div>
 
