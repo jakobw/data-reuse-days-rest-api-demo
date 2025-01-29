@@ -4,10 +4,36 @@
     <div class="container">
         <h1 class="title"><%= label %> (<%= id %>)</h1>
 
-        <p>Primary type: <%= primaryTypeStatement.value.content %></p>
-        <% if ( secondaryTypeStatement ) { %>
-            <p>Secondary type: <%= secondaryTypeStatement.value.content %></p>
-        <% } %>
+        <div class="field">
+            <label for="primaryType" class="label">
+                Primary type
+            </label>
+            <div class="select">
+                <select name="primaryType">
+                    <option value="none">none</option>
+                    <% Object.keys( allTypes ).forEach( ( id ) => { %>
+                        <option value="<%= id %>" <%= primaryTypeStatement && primaryTypeStatement.value.content === id ? 'selected' : '' %>>
+                            <%= allTypes[id] %>
+                        </option>
+                    <% } ) %>
+                </select>
+            </div>
+        </div>
+
+
+        <div class="field">
+            <label for="secondaryType" class="label">Secondary type</label>
+            <div class="select">
+                <select name="secondaryType">
+                    <option value="none">none</option>
+                    <% Object.keys( allTypes ).forEach( ( id ) => { %>
+                        <option value="<%= id %>" <%= secondaryTypeStatement && secondaryTypeStatement.value.content === id ? 'selected' : '' %>>
+                            <%= allTypes[id] %>
+                        </option>
+                    <% } ) %>
+                </select>
+            </div>
+        </div>
     </div>
 </div>
 

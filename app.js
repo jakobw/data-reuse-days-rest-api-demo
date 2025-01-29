@@ -54,7 +54,8 @@ app.get( '/pokemon', async ( req, res ) => {
 		label: await getLabel( id ),
 		user: req.session.user,
 		primaryTypeStatement,
-		secondaryTypeStatement
+		secondaryTypeStatement,
+		allTypes: ids.allTypes
 	} );
 } );
 
