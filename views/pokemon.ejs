@@ -3,6 +3,11 @@
 <div class="section">
     <div class="container">
         <h1 class="title"><%= label %> (<%= id %>)</h1>
+
+        <p>Primary type: <%= primaryTypeStatement.value.content %></p>
+        <% if ( secondaryTypeStatement ) { %>
+            <p>Secondary type: <%= secondaryTypeStatement.value.content %></p>
+        <% } %>
     </div>
 </div>
 

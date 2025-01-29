@@ -1,6 +1,7 @@
 const path = require( 'path' );
 const express = require( 'express' );
 const { setUpOauth } = require( './auth' );
+const ids = require( './ids.json' );
 
 const app = express();
 const port = 7777;
@@ -30,10 +31,31 @@ async function getLabel( id ) {
 	return makeApiRequest( `/entities/items/${ id }/labels/en` );
 }
 
+async function getStatements( id, pId ) {
+	return ( await makeApiRequest( `/entities/items/${ id }/statements?property=${ pId }` ) )[ pId ] || [];
+}
+
+function findStatementWithQualifier( statements, qualifierProperty, qualifierValue ) {
+	return statements.find( ( statement ) => {
+		return statement.qualifiers.some( ( qualifier ) => qualifier.property.id === qualifierProperty
+			&& qualifier.value.content === qualifierValue );
+	} );
+}
+
 app.get( '/pokemon', async ( req, res ) => {
 	const id = req.query.id;
 
-	res.render( 'pokemon', { id, label: await getLabel( id ), user: req.session.user } );
+	const instanceOfStatements = await getStatements( id, ids.instanceOf );
+	const primaryTypeStatement = findStatementWithQualifier( instanceOfStatements, ids.appliesToPart, ids.primaryType );
+	const secondaryTypeStatement = findStatementWithQualifier( instanceOfStatements, ids.appliesToPart, ids.secondaryType );
+
+	res.render( 'pokemon', {
+		id,
+		label: await getLabel( id ),
+		user: req.session.user,
+		primaryTypeStatement,
+		secondaryTypeStatement
+	} );
 } );
 
 app.listen( port, () => {
