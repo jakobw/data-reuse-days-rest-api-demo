@@ -1,6 +1,6 @@
 const path = require( 'path' );
 const express = require( 'express' );
-const { setUpOauth } = require( './auth' );
+const { setUpOauth, makeOauthHeaders } = require( './auth' );
 const ids = require( './ids.json' );
 
 const app = express();
@@ -15,15 +15,16 @@ app.get( '/', ( req, res ) => {
 	res.render( 'index', { user: req.session.user } );
 } );
 
-async function makeApiRequest( path, method = 'GET', jsonBody ) {
-	const restApiBaseUrl = 'http://default.mediawiki.mwdd.localhost:8080/w/rest.php/wikibase/v1';
+async function makeApiRequest( path, method = 'GET', jsonBody, user ) {
+	const url = 'http://default.mediawiki.mwdd.localhost:8080/w/rest.php/wikibase/v1' + path;
 	return ( await fetch(
-		restApiBaseUrl + path,
+		url,
 		{
 			method,
 			headers: {
 				'User-Agent': `DataReuseDaysDemo/0.0 (${ process.env.EMAIL })`,
-				'Content-Type': 'application/json'
+				'Content-Type': 'application/json',
+				...( user ? makeOauthHeaders( user, method, url ) : {} )
 			},
 			body: jsonBody && JSON.stringify( jsonBody )
 		}
@@ -62,7 +63,7 @@ app.get( '/pokemon', async ( req, res ) => {
 	} );
 } );
 
-async function addTypeStatement( itemId, value, typeQualifierValue ) {
+async function addTypeStatement( user, itemId, value, typeQualifierValue ) {
 	return makeApiRequest(
 		`/entities/items/${ itemId }/statements`,
 		'POST',
@@ -75,15 +76,16 @@ async function addTypeStatement( itemId, value, typeQualifierValue ) {
 					value: { type: 'value', content: typeQualifierValue }
 				} ]
 			}
-		}
+		},
+		user
 	);
 }
 
-async function deleteTypeStatement( statementId ) {
-	return makeApiRequest( `/statements/${ statementId }`, 'DELETE' );
+async function deleteTypeStatement( user, statementId ) {
+	return makeApiRequest( `/statements/${ statementId }`, 'DELETE', null, user );
 }
 
-async function changeTypeStatementValue( statementId, value ) {
+async function changeTypeStatementValue( user, statementId, value ) {
 	return makeApiRequest(
 		`/statements/${ statementId }`,
 		'PATCH',
@@ -91,7 +93,8 @@ async function changeTypeStatementValue( statementId, value ) {
 			patch: [
 				{ op: 'replace', path: '/value/content', value: value }
 			]
-		}
+		},
+		user
 	);
 }
 
@@ -111,13 +114,14 @@ app.post( '/update-types', async ( req, res ) => {
 		},
 	];
 
+	const user = req.session.user.oauth;
 	for ( const { statementId, newType, originalType, typeQualifierValue } of updates ) {
 		if( !statementId && newType !== 'none' ) {
-			await addTypeStatement( req.body.id, newType, typeQualifierValue );
+			await addTypeStatement( user, req.body.id, newType, typeQualifierValue );
 		} else if( statementId && newType === 'none' ) {
-			await deleteTypeStatement( statementId );
+			await deleteTypeStatement( user, statementId );
 		} else if( statementId && newType !== originalType ) {
-			await changeTypeStatementValue( statementId, newType );
+			await changeTypeStatementValue( user, statementId, newType );
 		}
 	}
 
