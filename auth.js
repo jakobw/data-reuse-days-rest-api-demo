@@ -2,6 +2,31 @@ const { OAuthStrategy: MediaWikiStrategy } = require( 'passport-mediawiki-oauth'
 const passport = require( 'passport' );
 const bodyParser = require( 'body-parser' );
 const session = require( 'express-session' );
+const OAuth = require( 'oauth-1.0a' );
+const crypto = require( 'crypto' );
+
+const oauth = OAuth( {
+	consumer: { key: process.env.MEDIAWIKI_CONSUMER_KEY, secret: process.env.MEDIAWIKI_CONSUMER_SECRET },
+	signature_method: 'HMAC-SHA1',
+	hash_function( base_string, key ) {
+		return crypto
+			.createHmac( 'sha1', key )
+			.update( base_string )
+			.digest( 'base64' )
+	},
+} );
+
+function makeOauthHeaders( user, method, url ) {
+	return oauth.toHeader( oauth.authorize(
+		{ url, method, data: {} },
+		{
+			key: user.token,
+			secret: user.token_secret
+		}
+	) );
+}
+
+module.exports.makeOauthHeaders = makeOauthHeaders;
 
 function setUpOauth( app, port ) {
 	passport.use( new MediaWikiStrategy(
