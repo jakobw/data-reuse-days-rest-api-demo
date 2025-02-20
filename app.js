@@ -1,6 +1,6 @@
 const path = require( 'path' );
 const express = require( 'express' );
-const { setUpOauth, makeOauthHeaders } = require( './auth' );
+const { setUpOauth, getAuthorizationHeader } = require( './auth' );
 const ids = require( './ids.json' );
 
 const app = express();
@@ -24,7 +24,7 @@ async function makeApiRequest( path, method = 'GET', jsonBody, user ) {
 			headers: {
 				'User-Agent': `DataReuseDaysDemo/0.0 (${ process.env.EMAIL })`,
 				'Content-Type': 'application/json',
-				...( user ? makeOauthHeaders( user, method, url ) : {} )
+				Authorization: user && getAuthorizationHeader( user, method, url )
 			},
 			body: jsonBody && JSON.stringify( jsonBody )
 		}

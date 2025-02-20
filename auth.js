@@ -16,17 +16,17 @@ const oauth = OAuth( {
 	},
 } );
 
-function makeOauthHeaders( user, method, url ) {
+function getAuthorizationHeader( user, method, url ) {
 	return oauth.toHeader( oauth.authorize(
 		{ url, method, data: {} },
 		{
 			key: user.token,
 			secret: user.token_secret
 		}
-	) );
+	) ).Authorization;
 }
 
-module.exports.makeOauthHeaders = makeOauthHeaders;
+module.exports.getAuthorizationHeader = getAuthorizationHeader;
 
 function setUpOauth( app, port ) {
 	passport.use( new MediaWikiStrategy(
