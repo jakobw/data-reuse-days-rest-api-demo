@@ -34,7 +34,7 @@ function setUpOauth( app, port ) {
 			consumerKey: process.env.MEDIAWIKI_CONSUMER_KEY,
 			consumerSecret: process.env.MEDIAWIKI_CONSUMER_SECRET,
 			callbackURL: `http://localhost:${ port }/auth/mediawiki/callback`,
-			baseURL: 'http://default.mediawiki.mwdd.localhost:8080/'
+			baseURL: process.env.WIKI_URL
 		},
 		function ( token, tokenSecret, profile, done ) {
 			profile.oauth = {

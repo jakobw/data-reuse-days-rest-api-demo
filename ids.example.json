@@ -1,0 +1,16 @@
+{
+	"instanceOf": "P1",
+	"appliesToPart": "P2",
+	"primaryType": "Q1",
+	"secondaryType": "Q2",
+	"allTypes": {
+		"Q3": "🔥 (fire)",
+		"Q4": "⚡ (electric)",
+		"Q5": "🦅 (flying)",
+		"Q6": "💧 (water)",
+		"Q7": "\uD83C\uDF31 (grass)",
+		"Q8": "❄\uFE0F (ice)",
+		"Q9": "\uD83D\uDC1B (bug)",
+		"Q10": "\uD83D\uDC7B (ghost)"
+	}
+}

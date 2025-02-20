@@ -16,7 +16,7 @@ app.get( '/', ( req, res ) => {
 } );
 
 async function makeApiRequest( path, method = 'GET', jsonBody, user ) {
-	const url = 'http://default.mediawiki.mwdd.localhost:8080/w/rest.php/wikibase/v1' + path;
+	const url = `${ process.env.WIKI_URL }/w/rest.php/wikibase/v1` + path;
 	return ( await fetch(
 		url,
 		{
